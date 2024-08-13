@@ -40,7 +40,7 @@ jobs:
           git checkout -b release_${{ env.major }}_${{ env.minor }}
           git push origin release_${{ env.major }}_${{ env.minor }}
 
-      - name: create new minor snapshot version
+      - name: Create new minor snapshot version
         run: |
           git config user.email "kodinfo@github.com"
           git config user.name "Github pipeline"
