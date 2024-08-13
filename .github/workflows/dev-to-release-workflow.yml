@@ -40,12 +40,11 @@ jobs:
           git checkout -b release_${{ env.major }}_${{ env.minor }}
           git push origin release_${{ env.major }}_${{ env.minor }}
 
-      - name: Update develop version to next snapshot
+      - name: create new minor snapshot version
         run: |
-          set -e
           git config user.email "kodinfo@github.com"
           git config user.name "Github pipeline"
-          mvn versions:set -DnextSnapshot=true
-          git add .
-          git commit -m "Bump version to next snapshot"
-          git push origin develop
+          mvn validate -DbumpMinor
+          git add . 
+          git commit -m "new minor snapshot version"
+          git push
