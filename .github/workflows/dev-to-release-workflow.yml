@@ -42,8 +42,8 @@ jobs:
 
       - name: Create new minor snapshot version
         run: |
-          git config user.email "kodinfo@github.com"
-          git config user.name "Github pipeline"
+          git config user.email "berenyi.krisztian@kodinformatika.hu"
+          git config user.name "berenyik"
           mvn validate -DbumpMinor
           git add . 
           git commit -m "new minor snapshot version"
