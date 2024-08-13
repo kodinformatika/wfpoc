@@ -1,0 +1,51 @@
+name: Create Release Branch from Develop
+
+on: workflow_dispatch
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  create-release-branch:
+    name: Create Release Branch from Develop
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout develop branch
+        uses: actions/checkout@v2
+        with:
+          ref: develop
+          fetch-depth: '0'
+          token: ${{ secrets.GHA_PAT }}
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: "temurin"
+          cache: maven
+
+      - name: Get Current Version
+        id: get_version
+        run: |
+          current_version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo "Current version: $current_version"
+          major_version=$(echo $current_version | cut -d. -f1)
+          minor_version=$(echo $current_version | cut -d. -f2)
+          echo "major=$major_version" >> $GITHUB_ENV
+          echo "minor=$minor_version" >> $GITHUB_ENV
+
+      - name: Create release branch
+        run: |
+          git checkout -b release_${{ env.major }}_${{ env.minor }}
+          git push origin release_${{ env.major }}_${{ env.minor }}
+
+      - name: Update develop version to next snapshot
+        run: |
+          set -e
+          git config user.email "kodinfo@github.com"
+          git config user.name "Github pipeline"
+          mvn versions:set -DnextSnapshot=true
+          git add .
+          git commit -m "Bump version to next snapshot"
+          git push origin develop
