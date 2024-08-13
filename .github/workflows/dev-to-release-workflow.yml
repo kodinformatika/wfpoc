@@ -12,9 +12,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout develop branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
         with:
-          ref: main
+          ref: develop
           fetch-depth: '0'
           token: ${{ secrets.GHA_PAT }}
 
@@ -48,4 +48,4 @@ jobs:
           mvn versions:set -DnextSnapshot=true
           git add .
           git commit -m "Bump version to next snapshot"
-          git push origin main
+          git push origin develop
