@@ -40,6 +40,13 @@ jobs:
           git checkout -b release_${{ env.major }}_${{ env.minor }}
           git push origin release_${{ env.major }}_${{ env.minor }}
 
+      - name: Git checkout
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: '0'
+          token: ${{ secrets.GHA_PAT }}
+
       - name: Create new minor snapshot version
         run: |
           git config user.email "berenyi.krisztian@kodinformatika.hu"
